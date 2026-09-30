@@ -87,4 +87,30 @@ public class TaskServiceTests
         result.Should().BeEquivalentTo(new TaskResponse(
             saved.Id, request.Title, request.Description, request.Status, request.DueDate));
     }
+
+    [Fact]
+    public async Task Get_task_owned_by_another_user_throws_not_found()
+    {
+        var othersTask = ExistingTask(ownerId: Guid.NewGuid());
+
+        var act = () => _sut.GetByIdAsync(UserId, othersTask.Id);
+
+        await act.Should().ThrowAsync<NotFoundException>();
+    }
+
+    private TaskItem ExistingTask(Guid ownerId)
+    {
+        var task = new TaskItem
+        {
+            Id = Guid.NewGuid(),
+            Title = "Existing",
+            Status = TaskItemStatus.InProgress,
+            DueDate = Now.UtcDateTime.AddDays(1),
+            UserId = ownerId
+        };
+        _repository
+            .Setup(r => r.GetByIdAsync(task.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(task);
+        return task;
+    }
 }

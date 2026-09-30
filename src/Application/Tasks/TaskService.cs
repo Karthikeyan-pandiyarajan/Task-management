@@ -34,4 +34,7 @@ public sealed class TaskService(ITaskRepository repository, TimeProvider timePro
 
         return task.ToResponse();
     }
+
+    public Task<TaskResponse> GetByIdAsync(Guid userId, Guid taskId, CancellationToken ct = default)
+        => throw new NotImplementedException();
 }
