@@ -98,6 +98,18 @@ public class TaskServiceTests
         await act.Should().ThrowAsync<NotFoundException>();
     }
 
+    [Fact]
+    public async Task Get_missing_task_throws_not_found()
+    {
+        _repository
+            .Setup(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((TaskItem?)null);
+
+        var act = () => _sut.GetByIdAsync(UserId, Guid.NewGuid());
+
+        await act.Should().ThrowAsync<NotFoundException>();
+    }
+
     private TaskItem ExistingTask(Guid ownerId)
     {
         var task = new TaskItem
