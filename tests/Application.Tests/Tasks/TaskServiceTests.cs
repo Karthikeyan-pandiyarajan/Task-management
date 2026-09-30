@@ -57,4 +57,15 @@ public class TaskServiceTests
         await act.Should().ThrowAsync<AppValidationException>().WithMessage("*status*");
         _repository.VerifyNoOtherCalls();
     }
+
+    [Fact]
+    public async Task Create_with_due_date_in_the_past_throws()
+    {
+        var yesterday = Now.UtcDateTime.AddDays(-1);
+
+        var act = () => _sut.CreateAsync(UserId, ValidCreate(dueDate: yesterday));
+
+        await act.Should().ThrowAsync<AppValidationException>().WithMessage("*past*");
+        _repository.VerifyNoOtherCalls();
+    }
 }
