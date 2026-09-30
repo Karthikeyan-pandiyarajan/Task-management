@@ -68,4 +68,23 @@ public class TaskServiceTests
         await act.Should().ThrowAsync<AppValidationException>().WithMessage("*past*");
         _repository.VerifyNoOtherCalls();
     }
+
+    [Fact]
+    public async Task Create_valid_task_adds_it_once_for_the_user_and_returns_it()
+    {
+        TaskItem? saved = null;
+        _repository
+            .Setup(r => r.AddAsync(It.IsAny<TaskItem>(), It.IsAny<CancellationToken>()))
+            .Callback<TaskItem, CancellationToken>((t, _) => saved = t)
+            .Returns(Task.CompletedTask);
+        var request = ValidCreate();
+
+        var result = await _sut.CreateAsync(UserId, request);
+
+        _repository.Verify(r => r.AddAsync(It.IsAny<TaskItem>(), It.IsAny<CancellationToken>()), Times.Once);
+        saved!.UserId.Should().Be(UserId);
+        saved.Id.Should().NotBeEmpty();
+        result.Should().BeEquivalentTo(new TaskResponse(
+            saved.Id, request.Title, request.Description, request.Status, request.DueDate));
+    }
 }
