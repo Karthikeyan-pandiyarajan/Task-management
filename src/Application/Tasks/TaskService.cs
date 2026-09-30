@@ -1,5 +1,6 @@
 using Application.Abstractions;
 using Application.Common;
+using Domain.Entities;
 
 namespace Application.Tasks;
 
@@ -7,7 +8,7 @@ public sealed class TaskService(ITaskRepository repository, TimeProvider timePro
 {
     public const int MaxTitleLength = 100;
 
-    public Task<TaskResponse> CreateAsync(Guid userId, CreateTaskRequest request, CancellationToken ct = default)
+    public async Task<TaskResponse> CreateAsync(Guid userId, CreateTaskRequest request, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(request.Title))
             throw new AppValidationException("Title is required.");
@@ -19,6 +20,18 @@ public sealed class TaskService(ITaskRepository repository, TimeProvider timePro
         if (request.DueDate.Date < timeProvider.GetUtcNow().UtcDateTime.Date)
             throw new AppValidationException("Due date cannot be in the past.");
 
-        throw new NotImplementedException();
+        var task = new TaskItem
+        {
+            Id = Guid.NewGuid(),
+            Title = request.Title.Trim(),
+            Description = request.Description,
+            Status = request.Status,
+            DueDate = request.DueDate,
+            UserId = userId
+        };
+
+        await repository.AddAsync(task, ct);
+
+        return task.ToResponse();
     }
 }
