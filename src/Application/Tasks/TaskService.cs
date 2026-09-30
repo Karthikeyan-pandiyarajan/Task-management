@@ -35,6 +35,13 @@ public sealed class TaskService(ITaskRepository repository, TimeProvider timePro
         return task.ToResponse();
     }
 
-    public Task<TaskResponse> GetByIdAsync(Guid userId, Guid taskId, CancellationToken ct = default)
-        => throw new NotImplementedException();
+    public async Task<TaskResponse> GetByIdAsync(Guid userId, Guid taskId, CancellationToken ct = default)
+    {
+        var task = await repository.GetByIdAsync(taskId, ct);
+        // Same exception as "missing" so callers can't probe which task IDs exist.
+        if (task!.UserId != userId)
+            throw new NotFoundException($"Task {taskId} was not found.");
+
+        return task.ToResponse();
+    }
 }
