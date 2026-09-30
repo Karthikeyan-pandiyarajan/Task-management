@@ -13,6 +13,8 @@ public sealed class TaskService(ITaskRepository repository, TimeProvider timePro
             throw new AppValidationException("Title is required.");
         if (request.Title.Trim().Length > MaxTitleLength)
             throw new AppValidationException($"Title must be at most {MaxTitleLength} characters.");
+        if (!Enum.IsDefined(request.Status))
+            throw new AppValidationException($"'{(int)request.Status}' is not a valid status.");
 
         throw new NotImplementedException();
     }
