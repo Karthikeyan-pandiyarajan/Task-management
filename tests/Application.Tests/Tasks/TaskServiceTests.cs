@@ -46,4 +46,15 @@ public class TaskServiceTests
         await act.Should().ThrowAsync<AppValidationException>().WithMessage("*100*");
         _repository.VerifyNoOtherCalls();
     }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(99)]
+    public async Task Create_with_undefined_status_throws(int status)
+    {
+        var act = () => _sut.CreateAsync(UserId, ValidCreate(status: (TaskItemStatus)status));
+
+        await act.Should().ThrowAsync<AppValidationException>().WithMessage("*status*");
+        _repository.VerifyNoOtherCalls();
+    }
 }
