@@ -37,4 +37,13 @@ public class TaskServiceTests
         await act.Should().ThrowAsync<AppValidationException>();
         _repository.VerifyNoOtherCalls();
     }
+
+    [Fact]
+    public async Task Create_with_title_over_100_characters_throws()
+    {
+        var act = () => _sut.CreateAsync(UserId, ValidCreate(title: new string('a', 101)));
+
+        await act.Should().ThrowAsync<AppValidationException>().WithMessage("*100*");
+        _repository.VerifyNoOtherCalls();
+    }
 }
