@@ -1,9 +1,15 @@
 using Application.Abstractions;
+using Application.Common;
 
 namespace Application.Tasks;
 
 public sealed class TaskService(ITaskRepository repository, TimeProvider timeProvider)
 {
     public Task<TaskResponse> CreateAsync(Guid userId, CreateTaskRequest request, CancellationToken ct = default)
-        => throw new NotImplementedException();
+    {
+        if (string.IsNullOrWhiteSpace(request.Title))
+            throw new AppValidationException("Title is required.");
+
+        throw new NotImplementedException();
+    }
 }
