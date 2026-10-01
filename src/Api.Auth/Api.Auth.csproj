@@ -4,6 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Shared with Api.Tasks so one `dotnet user-secrets set "Jwt:Secret" ...` configures both APIs. -->
+    <UserSecretsId>taskapp-dev-shared-secrets</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Api.Common\Api.Common.csproj" />
   </ItemGroup>
 
 </Project>
