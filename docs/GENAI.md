@@ -201,12 +201,10 @@ My rule throughout: **AI output is a draft until something independent proves it
 | 3 | My prompt only specified the past-due-date rule "on create"; applying it to update too would make overdue tasks impossible to complete | Thinking through the update flow | Rule deliberately *not* applied on update, documented by the test `Update_allows_past_due_date_so_overdue_tasks_can_be_completed` |
 | 4 | My prompt listed only 9 task rules: no happy-path or validation tests for Update/Delete | Phase 4 needed those behaviours | Added tests for update success, update validation, and delete success before using them from the API |
 | 5 | Both APIs have a `Program` class in the global namespace, so `WebApplicationFactory<Program>` is ambiguous in one test project | Flagged right after scaffolding | Marker types `AuthApiMarker` / `TasksApiMarker` |
-| 6 | Reading configuration eagerly in `Program.cs` would ignore test overrides from `WebApplicationFactory` | Design review of the test fixture | All options (`Jwt`, `Database`, bearer validation, CORS) bind lazily through `IOptions`, with `ValidateOnStart` |
-| 7 | Exception handler, JWT setup and CORS would have been copy-pasted into both APIs | Review of the Phase 4 plan | Extracted into `Api.Common` (a deliberate deviation from my prompt, see table above) |
-| 8 | Angular 22's `ng new` defaults to Vitest, but I asked for Jasmine | Checked `ng new --help` before generating | `--test-runner=karma` |
-| 9 | The first `TaskList` specs hung for 5 s each: `fixture.whenStable()` never resolves while an `rxResource` HTTP request is open | Specs timed out | Test helper now runs effects and change detection explicitly (`TestBed.tick()`) |
-| 10 | The list template used `$any($event.target).value`, which breaks my "no `any`" rule | Reading the generated template | Replaced with a typed template reference (`#filter`) |
-| 11 | The assignment asks for unit tests of the API endpoints; the first version only had HTTP-level integration tests | Comparing the result against the assignment text | Added isolated controller unit tests (`TasksControllerTests`, `AuthControllerTests`) |
+| 6 | Exception handler, JWT setup and CORS would have been copy-pasted into both APIs | Review of the Phase 4 plan | Extracted into `Api.Common` (a deliberate deviation from my prompt, see table above) |
+| 7 | Angular 22's `ng new` defaults to Vitest, but I asked for Jasmine | Checked `ng new --help` before generating | `--test-runner=karma` |
+| 8 | The list template used `$any($event.target).value`, which breaks my "no `any`" rule | Reading the generated template | Replaced with a typed template reference (`#filter`) |
+| 9 | The assignment asks for unit tests of the API endpoints; the first version only had HTTP-level integration tests | Comparing the result against the assignment text | Added isolated controller unit tests (`TasksControllerTests`, `AuthControllerTests`) |
 
 ### How edge cases, authentication and validation are handled
 

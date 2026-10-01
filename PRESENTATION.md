@@ -71,15 +71,11 @@ The value showed up early: the minimal code for "you can't get another user's ta
 
 ## 5. How I used GenAI
 
-I used Claude Code as a pair programmer, driven by a single structured prompt (in [docs/GENAI.md](docs/GENAI.md)) that fixed the architecture, the dependency rules, the business rules in order, and the working method (TDD, small steps, explain every choice).
+I used Claude Code as a pair programmer, driven by one structured prompt that fixed the architecture, the business rules and the working method (TDD, small steps, explain every choice).
 
-My approach to its output: **treat it as a draft until something independent proves it.** That meant failing tests before code, running both real APIs as processes, and driving the running app in a browser. This found eleven concrete problems, all listed with their fixes in GENAI.md. Three examples:
+I treated its output as **a draft until something independent proved it**: a failing test first, the real APIs running, or the app in a browser. That found nine concrete problems. For example, `GET /api/tasks?status=99` silently returned an empty list until I added a failing test and validation.
 
-- An undefined status in `GET /api/tasks?status=99` silently returned an empty list. I added a failing test, then validation.
-- My own prompt was incomplete: it only said "no past due date on create". Applying that to updates would have made overdue tasks impossible to complete, so I kept it create-only and wrote a test that documents the decision.
-- The assignment asks for unit tests of the API endpoints; the first version had only HTTP-level integration tests, so I added isolated controller tests.
-
-I also deviated from my own prompt where it was the better call (for example a small shared `Api.Common` project instead of duplicating error handling in both APIs). Those deviations are listed openly in GENAI.md.
+The prompt, sample output, every problem with its fix, and where I deviated from my own prompt are in [docs/GENAI.md](docs/GENAI.md).
 
 ## 6. Results
 
