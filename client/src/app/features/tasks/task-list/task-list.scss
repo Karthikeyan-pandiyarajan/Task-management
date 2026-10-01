@@ -1,0 +1,122 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.filter {
+  width: auto;
+  min-width: 11rem;
+}
+
+.task-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+}
+
+.task {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.task-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.task-title {
+  font-size: 1.05rem;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.task-description {
+  margin: 0;
+  color: var(--text-muted);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.task-due {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+
+  &.overdue {
+    color: var(--danger);
+  }
+}
+
+.badge {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid currentcolor;
+
+  &[data-status='Todo'] {
+    color: var(--text-muted);
+  }
+
+  &[data-status='InProgress'] {
+    color: var(--warning);
+  }
+
+  &[data-status='Done'] {
+    color: var(--success);
+  }
+}
+
+.task-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.confirm-text {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.empty {
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+}
+
+.alert .btn {
+  margin-left: 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .toolbar-actions,
+  .filter,
+  .toolbar-actions .btn {
+    width: 100%;
+  }
+}

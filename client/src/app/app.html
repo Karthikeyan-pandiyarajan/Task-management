@@ -1,0 +1,14 @@
+<header class="app-header">
+  <a class="brand" routerLink="/tasks">TaskApp</a>
+
+  @if (auth.isLoggedIn()) {
+    <div class="session">
+      <span class="email" data-testid="current-user">{{ auth.email() }}</span>
+      <button type="button" class="btn btn-ghost" (click)="logout()">Log out</button>
+    </div>
+  }
+</header>
+
+<main class="app-main">
+  <router-outlet />
+</main>

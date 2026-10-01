@@ -1,0 +1,86 @@
+<div class="toolbar">
+  <h1>My tasks</h1>
+
+  <div class="toolbar-actions">
+    <label class="sr-only" for="status-filter">Filter by status</label>
+    <select
+      #filter
+      id="status-filter"
+      class="input filter"
+      data-testid="status-filter"
+      [value]="statusFilter() ?? ''"
+      (change)="onFilterChange(filter.value)"
+    >
+      <option value="">All statuses</option>
+      @for (status of statuses; track status) {
+        <option [value]="status">{{ statusLabels[status] }}</option>
+      }
+    </select>
+
+    <a class="btn btn-primary" routerLink="new">+ New task</a>
+  </div>
+</div>
+
+@if (actionError(); as message) {
+  <p class="alert" role="alert">{{ message }}</p>
+}
+
+@if (tasks.isLoading()) {
+  <p class="muted" data-testid="loading" aria-live="polite">Loading tasks…</p>
+} @else if (tasks.error()) {
+  <div class="alert" role="alert" data-testid="load-error">
+    {{ errorMessage(tasks.error()) }}
+    <button type="button" class="btn btn-ghost btn-sm" (click)="tasks.reload()">Retry</button>
+  </div>
+} @else {
+  @let list = tasks.value() ?? [];
+  @if (list.length === 0) {
+    <div class="card empty" data-testid="empty">
+      <p>{{ statusFilter() ? 'No tasks with this status.' : 'No tasks yet.' }}</p>
+      <a class="btn btn-primary" routerLink="new">Create your first task</a>
+    </div>
+  } @else {
+    <ul class="task-grid">
+      @for (task of list; track task.id) {
+        <li class="card task" data-testid="task-item">
+          <div class="task-head">
+            <h2 class="task-title">{{ task.title }}</h2>
+            <span class="badge" [attr.data-status]="task.status">{{ statusLabels[task.status] }}</span>
+          </div>
+
+          @if (task.description) {
+            <p class="task-description">{{ task.description }}</p>
+          }
+
+          <p class="task-due" [class.overdue]="isOverdue(task)">
+            Due {{ task.dueDate | date: 'mediumDate' }}
+            @if (isOverdue(task)) {
+              <strong>· Overdue</strong>
+            }
+          </p>
+
+          <div class="task-actions">
+            @if (pendingDeleteId() === task.id) {
+              <span class="confirm-text">Delete this task?</span>
+              <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                data-testid="confirm-delete"
+                [disabled]="deletingId() === task.id"
+                (click)="confirmDelete(task.id)"
+              >
+                {{ deletingId() === task.id ? 'Deleting…' : 'Yes, delete' }}
+              </button>
+              <button type="button" class="btn btn-ghost btn-sm" (click)="cancelDelete()">Cancel</button>
+            } @else {
+              <a class="btn btn-ghost btn-sm" [routerLink]="[task.id, 'edit']">Edit</a>
+              <button type="button" class="btn btn-ghost btn-sm" data-testid="delete" (click)="askDelete(task.id)">
+                Delete
+              </button>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  }
+}

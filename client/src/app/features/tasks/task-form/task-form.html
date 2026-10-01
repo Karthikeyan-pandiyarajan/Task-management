@@ -1,0 +1,66 @@
+<section class="card form-card">
+  <a class="back" routerLink="/tasks">← Back to tasks</a>
+  <h1>{{ isEdit() ? 'Edit task' : 'New task' }}</h1>
+
+  @if (loading()) {
+    <p class="muted" aria-live="polite">Loading task…</p>
+  } @else {
+    <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      @if (error(); as message) {
+        <p class="alert" role="alert">{{ message }}</p>
+      }
+
+      <div class="field">
+        <label for="title">Title</label>
+        <input id="title" class="input" formControlName="title" [attr.maxlength]="titleMax" />
+        @if (form.controls.title.touched && form.controls.title.errors; as errors) {
+          <p class="field-error">
+            @if (errors['required']) { Title is required. } @else { Title must be at most {{ titleMax }} characters. }
+          </p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="description">Description <span class="muted">(optional)</span></label>
+        <textarea id="description" class="input" formControlName="description" [attr.maxlength]="descriptionMax"></textarea>
+        @if (form.controls.description.hasError('maxlength')) {
+          <p class="field-error">Description must be at most {{ descriptionMax }} characters.</p>
+        }
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="status">Status</label>
+          <select id="status" class="input" formControlName="status">
+            @for (status of statuses; track status) {
+              <option [value]="status">{{ statusLabels[status] }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="dueDate">Due date</label>
+          <input
+            id="dueDate"
+            class="input"
+            type="date"
+            formControlName="dueDate"
+            [attr.min]="isEdit() ? null : today"
+          />
+          @if (form.controls.dueDate.touched && form.controls.dueDate.errors; as errors) {
+            <p class="field-error">
+              @if (errors['required']) { Due date is required. } @else { Due date cannot be in the past. }
+            </p>
+          }
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="btn btn-ghost" routerLink="/tasks">Cancel</a>
+        <button type="submit" class="btn btn-primary" [disabled]="saving()">
+          {{ saving() ? 'Saving…' : isEdit() ? 'Save changes' : 'Create task' }}
+        </button>
+      </div>
+    </form>
+  }
+</section>
